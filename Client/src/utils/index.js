@@ -152,3 +152,60 @@ export const readXlsx = (file) => {
     reader.readAsArrayBuffer(file)
   })
 }
+
+export const createExcelFile = (data) => {
+  // initialize workbook
+  const workbook = XLSX.utils.book_new()
+
+  // initialize header title
+  let HEADER = [
+    {
+      v: 'No',
+    },
+    {
+      v: 'Bahan',
+    },
+    {
+      v: 'Prediksi Pemakaian',
+    },
+    {
+      v: 'Satuan',
+    },
+  ]
+
+  // initialize worksheet
+  const worksheet = XLSX.utils.aoa_to_sheet([HEADER])
+
+  data.forEach((value, index) => {
+    const { item, prediksi, satuan } = value
+
+    XLSX.utils.sheet_add_json(
+      worksheet,
+      [
+        {
+          no: {
+            v: index + 1,
+          },
+          bahan: {
+            v: item,
+          },
+          prediksi: {
+            v: parseInt(prediksi),
+            t: 'n',
+            z: '0',
+          },
+          satuan: {
+            v: satuan,
+          },
+        },
+      ],
+      { skipHeader: true, origin: -1 }
+    )
+  })
+
+  // append worksheet named data to the workbook
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'data')
+
+  // export file
+  XLSX.writeFile(workbook, 'prediksi.xlsx')
+}
