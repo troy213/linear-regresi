@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { mainAction } from '../../store/main/main-slice'
+import { createExcelFile } from '../../utils'
 
 const OutputTable = () => {
   const { processedData } = useSelector((state) => state.main)
@@ -41,7 +42,12 @@ const OutputTable = () => {
           <button className='btn btn-warning' onClick={handleCancel}>
             Cancel
           </button>
-          <button className='btn btn-primary'>Export</button>
+          <button
+            className='btn btn-primary'
+            onClick={() => createExcelFile(processedData)}
+          >
+            Export
+          </button>
         </div>
       </div>
     </div>
