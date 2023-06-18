@@ -1,0 +1,19 @@
+.output-table {
+  width: 100%;
+  flex: 1;
+
+  &__table-wrapper {
+    max-width: 1080px;
+    width: 100%;
+    padding: 2rem;
+    background-color: $color-light;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+
+    & table th,
+    & table td {
+      padding: 0.25rem;
+      text-align: center;
+    }
+  }
+}
