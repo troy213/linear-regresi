@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const mainSlice = createSlice({
   name: 'main',
   initialState: {
-    data: '',
+    data: [],
     processedData: [],
   },
   reducers: {

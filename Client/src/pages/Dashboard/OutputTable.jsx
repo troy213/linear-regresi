@@ -1,7 +1,14 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { mainAction } from '../../store/main/main-slice'
 
 const OutputTable = () => {
   const { processedData } = useSelector((state) => state.main)
+
+  const dispatch = useDispatch()
+
+  const handleCancel = () => {
+    dispatch(mainAction.setState({ field: 'processedData', value: [] }))
+  }
   return (
     <div className='output-table flex-justify-center text-dark'>
       <div className='output-table__table-wrapper flex-column gap-4'>
@@ -31,7 +38,9 @@ const OutputTable = () => {
           </tbody>
         </table>
         <div className='flex-end gap-2 mt-4'>
-          <button className='btn btn-warning'>Cancel</button>
+          <button className='btn btn-warning' onClick={handleCancel}>
+            Cancel
+          </button>
           <button className='btn btn-primary'>Export</button>
         </div>
       </div>

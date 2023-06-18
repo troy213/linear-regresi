@@ -4,7 +4,7 @@ const Navbar = () => {
       <a href='/' className='navbar__title text-6 text-caveat-brush'>
         Linear Regression
       </a>
-      <ul className='flex gap-4'>
+      <ul className='flex-align-center gap-4'>
         <li>
           <p>
             Hi, <span className='text-bold'>John Doe</span>

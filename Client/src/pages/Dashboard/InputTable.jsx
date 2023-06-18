@@ -1,14 +1,19 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { mainAction } from '../../store/main/main-slice'
 import { processData, prosesRegresiArray } from '../../utils'
-import { dummyData } from '../../data/dummyData'
 
 const InputTable = () => {
+  const { data } = useSelector((state) => state.main)
   const dispatch = useDispatch()
 
   const handleSubmit = () => {
-    const newData = prosesRegresiArray(processData(dummyData))
+    const newData = prosesRegresiArray(processData(data))
     dispatch(mainAction.setState({ field: 'processedData', value: newData }))
+    dispatch(mainAction.setState({ field: 'data', value: [] }))
+  }
+
+  const handleCancel = () => {
+    dispatch(mainAction.setState({ field: 'data', value: [] }))
   }
 
   return (
@@ -26,7 +31,7 @@ const InputTable = () => {
             </tr>
           </thead>
           <tbody>
-            {dummyData.map((value, index) => {
+            {data.map((value, index) => {
               const { item, tanggal, stok, pemakaian, satuan } = value
 
               return (
@@ -42,7 +47,9 @@ const InputTable = () => {
           </tbody>
         </table>
         <div className='flex-end gap-2 mt-4'>
-          <button className='btn btn-warning'>Cancel</button>
+          <button className='btn btn-warning' onClick={handleCancel}>
+            Cancel
+          </button>
           <button className='btn btn-primary' onClick={handleSubmit}>
             Proses
           </button>

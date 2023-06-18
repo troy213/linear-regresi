@@ -1,3 +1,5 @@
+import * as XLSX from 'xlsx'
+
 const regresiLinear = (data, jumlahProduksi) => {
   const SQUARE = 2
 
@@ -99,4 +101,54 @@ export const processData = (data) => {
   })
 
   return output
+}
+
+function convertExcelDate(excelDate) {
+  const millisecondsPerDay = 24 * 60 * 60 * 1000 // Number of milliseconds in a day
+  const dateOffset = new Date(1899, 11, 30) // Excel's date offset (December 30, 1899)
+
+  const milliseconds = Math.round((excelDate - 1) * millisecondsPerDay)
+  const date = new Date(dateOffset.getTime() + milliseconds)
+
+  const addPadZero = (value) => {
+    if (value < 10) return `0${value}`
+    return value
+  }
+
+  // Format the date string as per your requirements
+  const formattedDate = `${addPadZero(date.getDate())}-${addPadZero(
+    date.getMonth() + 1
+  )}-${date.getFullYear()}`
+
+  return formattedDate
+}
+
+export const readXlsx = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const header = ['tanggal', 'item', 'stok', 'pemakaian', 'satuan']
+        const data = new Uint8Array(e.target.result)
+        const workbook = XLSX.read(data, { type: 'array' })
+        const sheetName = workbook.SheetNames[0]
+        const sheet = workbook.Sheets[sheetName]
+        const rawData = XLSX.utils.sheet_to_json(sheet, { header })
+        const output = rawData.slice(1, rawData.length)
+
+        const DATE_OFFSET = 2 // to fix excel date offset by 2 days
+        const parsedData = output.map((row) => {
+          return {
+            ...row,
+            tanggal: convertExcelDate(row.tanggal + DATE_OFFSET),
+          }
+        })
+
+        resolve(parsedData)
+      } catch (error) {
+        reject(error)
+      }
+    }
+    reader.readAsArrayBuffer(file)
+  })
 }

@@ -1,13 +1,30 @@
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { mainAction } from '../../store/main/main-slice'
+import { readXlsx } from '../../utils'
 import { HeroSvg } from '../../assets'
 
 const Main = () => {
   const [file, setFile] = useState(null)
   const { data } = useSelector((state) => state.main)
 
+  const dispatch = useDispatch()
+
   const handleFileChange = (e) => {
     setFile(e.target.files[0])
+  }
+
+  const handleReadXlsx = async (e, file) => {
+    e.preventDefault()
+    if (!file) return alert('Please select a file')
+
+    try {
+      const output = await readXlsx(file)
+      dispatch(mainAction.setState({ field: 'processedData', value: [] }))
+      dispatch(mainAction.setState({ field: 'data', value: output }))
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (
@@ -17,14 +34,14 @@ const Main = () => {
           <p className='text-8 text-caveat-brush'>
             Stock prediction using Linear Regression algorithm
           </p>
-          {data ? (
+          {data.length ? (
             <p>
               Easy way to predict the stock of item in single step. Say goodbye
               to complex and time-consuming processes - our intuitive interface
               simplifies the prediction process.
             </p>
           ) : (
-            <form>
+            <form onSubmit={(e) => handleReadXlsx(e, file)}>
               <label htmlFor='file-upload' className='flex-column gap-4'>
                 <p>Upload your report here</p>
                 <div className='flex gap-2'>
@@ -33,7 +50,10 @@ const Main = () => {
                       {file ? file.name : 'Upload .xlsx'}
                     </em>
                   </div>
-                  <button className='dashboard__file-input-submit'>
+                  <button
+                    className='dashboard__file-input-submit'
+                    type='submit'
+                  >
                     Upload
                   </button>
                 </div>

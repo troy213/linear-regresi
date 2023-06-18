@@ -5,14 +5,14 @@ import InputTable from './InputTable'
 import OutputTable from './OutputTable'
 
 const Dashboard = () => {
-  const { processedData } = useSelector((state) => state.main)
+  const { data, processedData } = useSelector((state) => state.main)
 
   return (
     <div className='dashboard flex-column gap-8'>
       <Navbar />
       <Main />
-      <InputTable />
-      {processedData.length && <OutputTable />}
+      {data.length ? <InputTable /> : null}
+      {processedData.length ? <OutputTable /> : null}
       <Footer />
     </div>
   )
