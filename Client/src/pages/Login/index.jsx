@@ -1,8 +1,29 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import useAuth from '../../hooks/useAuth'
+import { login } from '../../store/user/user-slice'
 import { Navbar, Footer } from '../../components'
 import { HeroSvg } from '../../assets'
 
 const Login = () => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const { setAuth } = useAuth()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    dispatch(login({ username, password })).then((res) => {
+      if (!res.error) {
+        setAuth(res.payload.data)
+        navigate('/')
+      }
+    })
+  }
+
   return (
     <div className='login flex-column'>
       <Navbar />
@@ -18,7 +39,10 @@ const Login = () => {
             simplifies the prediction process.
           </p>
         </div>
-        <form className='login__form flex-column gap-4 text-dark'>
+        <form
+          className='login__form flex-column gap-4 text-dark'
+          onSubmit={handleSubmit}
+        >
           <p className='text-5 text-bold text-center'>Sign In</p>
           <div className='flex-column gap-2'>
             <label htmlFor='username' className='text-3'>
@@ -29,6 +53,8 @@ const Login = () => {
               id='username'
               className='login__input'
               placeholder='username'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className='flex-column gap-2'>
@@ -40,13 +66,17 @@ const Login = () => {
               id='password'
               className='login__input'
               placeholder='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className='flex flex-space-between flex-align-center'>
             <Link to='/register' className='text-3 text-underline'>
               Belum punya akun?
             </Link>
-            <button className='btn btn-primary'>Sign In</button>
+            <button className='btn btn-primary' type='submit'>
+              Sign In
+            </button>
           </div>
         </form>
       </div>
