@@ -1,0 +1,1 @@
+export const DUMMY_LOADING_TIMEOUT = 10

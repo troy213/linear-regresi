@@ -1,14 +1,25 @@
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { mainAction } from '../../store/main/main-slice'
 import { processData, prosesRegresiArray } from '../../utils'
+import { DummyLoading } from '../../components'
 
 const InputTable = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [processedData, setProcessedData] = useState([])
   const { data } = useSelector((state) => state.main)
   const dispatch = useDispatch()
 
   const handleSubmit = () => {
     const newData = prosesRegresiArray(processData(data))
-    dispatch(mainAction.setState({ field: 'processedData', value: newData }))
+    setIsLoading(true)
+    setProcessedData(newData)
+  }
+
+  const handleDispatch = () => {
+    dispatch(
+      mainAction.setState({ field: 'processedData', value: processedData })
+    )
     dispatch(mainAction.setState({ field: 'data', value: [] }))
   }
 
@@ -18,6 +29,12 @@ const InputTable = () => {
 
   return (
     <div className='input-table flex-justify-center text-dark'>
+      <DummyLoading
+        isLoading={isLoading}
+        maxCount={processedData.length}
+        onClose={() => setIsLoading(false)}
+        dispatch={handleDispatch}
+      />
       <div className='input-table__table-wrapper flex-column gap-4'>
         <p className='text-5 text-bold'>Data List</p>
         <table>
@@ -51,7 +68,7 @@ const InputTable = () => {
             Cancel
           </button>
           <button className='btn btn-primary' onClick={handleSubmit}>
-            Proses
+            Process
           </button>
         </div>
       </div>

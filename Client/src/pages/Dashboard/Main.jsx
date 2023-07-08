@@ -3,9 +3,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { mainAction } from '../../store/main/main-slice'
 import { readXlsx } from '../../utils'
 import { HeroSvg } from '../../assets'
+import { DummyLoading } from '../../components'
 
 const Main = () => {
   const [file, setFile] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [xlsxData, setXlsxData] = useState([])
   const { data } = useSelector((state) => state.main)
 
   const dispatch = useDispatch()
@@ -20,15 +23,27 @@ const Main = () => {
 
     try {
       const output = await readXlsx(file)
-      dispatch(mainAction.setState({ field: 'processedData', value: [] }))
-      dispatch(mainAction.setState({ field: 'data', value: output }))
+      setIsLoading(true)
+      setXlsxData(output)
     } catch (err) {
       console.error(err)
     }
   }
 
+  const handleDispatch = () => {
+    dispatch(mainAction.setState({ field: 'processedData', value: [] }))
+    dispatch(mainAction.setState({ field: 'data', value: xlsxData }))
+  }
+
   return (
     <main className='dashboard__content flex-column flex-justify-center'>
+      <DummyLoading
+        isLoading={isLoading}
+        maxCount={xlsxData.length}
+        onClose={() => setIsLoading(false)}
+        dispatch={handleDispatch}
+      />
+
       <div className='flex flex-justify-center gap-8'>
         <div className='dashboard__content-left flex-column flex-justify-center gap-8'>
           <p className='text-8 text-caveat-brush'>

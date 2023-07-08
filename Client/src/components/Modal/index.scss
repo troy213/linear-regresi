@@ -1,0 +1,29 @@
+@import './DummyLoading';
+
+.modal {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.3);
+  height: 100%;
+  width: 100%;
+  min-width: 360px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+
+  &__container {
+    position: relative;
+    padding: 2rem;
+    margin: 0 2rem;
+    background-color: $color-light;
+    color: $color-dark;
+    border-radius: 1rem;
+    min-height: 100px;
+    min-width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    z-index: 4;
+  }
+}

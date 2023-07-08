@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { mainAction } from '../../store/main/main-slice'
 import { createExcelFile } from '../../utils'
+import { DummyLoading } from '../../components'
 
 const OutputTable = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const { processedData } = useSelector((state) => state.main)
 
   const dispatch = useDispatch()
@@ -10,8 +13,19 @@ const OutputTable = () => {
   const handleCancel = () => {
     dispatch(mainAction.setState({ field: 'processedData', value: [] }))
   }
+
+  const handleExport = () => {
+    setIsLoading(true)
+  }
+
   return (
     <div className='output-table flex-justify-center text-dark'>
+      <DummyLoading
+        isLoading={isLoading}
+        maxCount={processedData.length}
+        dispatch={() => createExcelFile(processedData)}
+        onClose={() => setIsLoading(false)}
+      />
       <div className='output-table__table-wrapper flex-column gap-4'>
         <p className='text-5 text-bold'>Prediction</p>
         <table>
@@ -42,10 +56,7 @@ const OutputTable = () => {
           <button className='btn btn-warning' onClick={handleCancel}>
             Cancel
           </button>
-          <button
-            className='btn btn-primary'
-            onClick={() => createExcelFile(processedData)}
-          >
+          <button className='btn btn-primary' onClick={handleExport}>
             Export
           </button>
         </div>
