@@ -1,1 +1,2 @@
 export const DUMMY_LOADING_TIMEOUT = 10
+export const LOADING_TIMEOUT_INCREMENT = 2

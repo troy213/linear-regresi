@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { LoadingSvg } from '../../assets'
-import { DUMMY_LOADING_TIMEOUT } from '../../utils/constants'
+import {
+  DUMMY_LOADING_TIMEOUT,
+  LOADING_TIMEOUT_INCREMENT,
+} from '../../utils/constants'
 import Modal from '.'
 
 const DummyLoading = ({ isLoading, onClose, maxCount, dispatch }) => {
@@ -9,7 +12,10 @@ const DummyLoading = ({ isLoading, onClose, maxCount, dispatch }) => {
   useEffect(() => {
     if (isLoading) {
       const countInterval = setInterval(() => {
-        setCount((prevState) => prevState + 1)
+        setCount((prevState) => {
+          if (prevState + LOADING_TIMEOUT_INCREMENT > maxCount) return maxCount
+          return prevState + LOADING_TIMEOUT_INCREMENT
+        })
         if (count >= maxCount) {
           setCount(0)
           onClose()
