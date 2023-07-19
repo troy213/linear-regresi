@@ -5,7 +5,7 @@ const Footer = () => {
       <p className='text-light text-3'>
         &copy; 2023 John Doe. All Rights Reserved
       </p>
-      <p className='text-light text-3'>v1.0.0</p>
+      <p className='text-light text-3'>v1.1.0</p>
     </footer>
   )
 }

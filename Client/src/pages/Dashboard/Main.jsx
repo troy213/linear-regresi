@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 import { mainAction } from '../../store/main/main-slice'
 import { readXlsx } from '../../utils'
 import { HeroSvg } from '../../assets'
@@ -19,7 +20,7 @@ const Main = () => {
 
   const handleReadXlsx = async (e, file) => {
     e.preventDefault()
-    if (!file) return alert('Please select a file')
+    if (!file) return toast.error('Please select a file')
 
     try {
       const output = await readXlsx(file)
@@ -31,7 +32,7 @@ const Main = () => {
   }
 
   const handleDispatch = () => {
-    dispatch(mainAction.setState({ field: 'processedData', value: [] }))
+    dispatch(mainAction.setState({ field: 'processedData', value: null }))
     dispatch(mainAction.setState({ field: 'data', value: xlsxData }))
   }
 

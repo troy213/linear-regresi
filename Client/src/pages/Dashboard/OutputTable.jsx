@@ -11,7 +11,7 @@ const OutputTable = () => {
   const dispatch = useDispatch()
 
   const handleCancel = () => {
-    dispatch(mainAction.setState({ field: 'processedData', value: [] }))
+    dispatch(mainAction.setState({ field: 'processedData', value: null }))
   }
 
   const handleExport = () => {
@@ -22,12 +22,14 @@ const OutputTable = () => {
     <div className='output-table flex-justify-center text-dark'>
       <DummyLoading
         isLoading={isLoading}
-        maxCount={processedData.length}
+        maxCount={processedData.output.length}
         dispatch={() => createExcelFile(processedData)}
         onClose={() => setIsLoading(false)}
       />
       <div className='output-table__table-wrapper flex-column gap-4'>
-        <p className='text-5 text-bold'>Prediction</p>
+        <p className='text-5 text-bold'>
+          Prediksi {processedData?.predictionDate}
+        </p>
         <table>
           <thead>
             <tr>
@@ -38,7 +40,7 @@ const OutputTable = () => {
             </tr>
           </thead>
           <tbody>
-            {processedData.map((item, index) => {
+            {processedData.output.map((item, index) => {
               const { prediksi, satuan } = item
 
               return (

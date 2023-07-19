@@ -4,7 +4,7 @@ const mainSlice = createSlice({
   name: 'main',
   initialState: {
     data: [],
-    processedData: [],
+    processedData: null,
   },
   reducers: {
     setState(state, action) {

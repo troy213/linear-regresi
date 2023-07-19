@@ -12,7 +12,7 @@ const Dashboard = () => {
       <Navbar />
       <Main />
       {data.length ? <InputTable /> : null}
-      {processedData.length ? <OutputTable /> : null}
+      {processedData?.output.length ? <OutputTable /> : null}
       <Footer />
     </div>
   )

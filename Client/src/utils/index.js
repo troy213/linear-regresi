@@ -43,11 +43,11 @@ const regresiLinear = (data, jumlahProduksi) => {
 }
 
 export const prosesRegresiArray = (data) => {
-  if (!data.length) return []
+  if (!data.output.length) return []
 
   const output = []
 
-  data.forEach((value) => {
+  data.output.forEach((value) => {
     const mean = Number(
       (
         value.subdata.reduce((acc, curr) => acc + curr.stok, 0) /
@@ -65,15 +65,22 @@ export const prosesRegresiArray = (data) => {
     output.push(newData)
   })
 
-  return output
+  return {
+    predictionDate: data.predictionDate,
+    output,
+  }
 }
 
 export const processData = (data) => {
   const output = []
+  const latestDateArr = []
 
   data.forEach((item) => {
     const index = output.findIndex((value) => value.item === item.item)
     const isExist = index >= 0
+
+    const newDate = item.tanggal.split('-')
+    latestDateArr.push(`${newDate[1]}-${newDate[0]}-${newDate[2]}`)
 
     if (isExist) {
       const { tanggal, stok, pemakaian } = item
@@ -100,7 +107,24 @@ export const processData = (data) => {
     }
   })
 
-  return output
+  const latestDate = new Date(
+    Math.max(...latestDateArr.map((dateStr) => new Date(dateStr)))
+  )
+  latestDate.setDate(latestDate.getDate() + 1)
+
+  const addPadZero = (value) => {
+    if (value < 10) return `0${value}`
+    return value
+  }
+
+  const predictionDate = `${addPadZero(latestDate.getDate())}-${addPadZero(
+    latestDate.getMonth() + 1
+  )}-${latestDate.getFullYear()}`
+
+  return {
+    predictionDate,
+    output,
+  }
 }
 
 function convertExcelDate(excelDate) {
@@ -176,7 +200,7 @@ export const createExcelFile = (data) => {
   // initialize worksheet
   const worksheet = XLSX.utils.aoa_to_sheet([HEADER])
 
-  data.forEach((value, index) => {
+  data.output.forEach((value, index) => {
     const { item, prediksi, satuan } = value
 
     XLSX.utils.sheet_add_json(
@@ -207,5 +231,5 @@ export const createExcelFile = (data) => {
   XLSX.utils.book_append_sheet(workbook, worksheet, 'data')
 
   // export file
-  XLSX.writeFile(workbook, 'prediksi.xlsx')
+  XLSX.writeFile(workbook, `prediksi ${data.predictionDate}.xlsx`)
 }

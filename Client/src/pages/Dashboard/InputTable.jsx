@@ -6,7 +6,7 @@ import { DummyLoading } from '../../components'
 
 const InputTable = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [processedData, setProcessedData] = useState([])
+  const [processedData, setProcessedData] = useState(null)
   const { data } = useSelector((state) => state.main)
   const dispatch = useDispatch()
 
@@ -31,7 +31,7 @@ const InputTable = () => {
     <div className='input-table flex-justify-center text-dark'>
       <DummyLoading
         isLoading={isLoading}
-        maxCount={processedData.length}
+        maxCount={processedData?.output.length}
         onClose={() => setIsLoading(false)}
         dispatch={handleDispatch}
       />
