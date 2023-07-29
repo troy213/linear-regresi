@@ -2,13 +2,30 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { mainAction } from '../../store/main/main-slice'
 import { createExcelFile } from '../../utils'
-import { DummyLoading } from '../../components'
+import { DummyLoading, Pagination } from '../../components'
+import { ITEM_PER_PAGE, DEFAULT_PAGE_OFFSET } from '../../utils/constants'
 
 const OutputTable = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const [pageOffset, setPageOffset] = useState(DEFAULT_PAGE_OFFSET)
   const { processedData } = useSelector((state) => state.main)
 
   const dispatch = useDispatch()
+
+  const handleNext = () => {
+    setPageOffset((page) => {
+      if (page + ITEM_PER_PAGE > processedData.output.length)
+        return processedData.output.length - ITEM_PER_PAGE
+      return page + ITEM_PER_PAGE
+    })
+  }
+
+  const handlePrev = () => {
+    setPageOffset((page) => {
+      if (page - ITEM_PER_PAGE <= 0) return DEFAULT_PAGE_OFFSET
+      return page - ITEM_PER_PAGE
+    })
+  }
 
   const handleCancel = () => {
     dispatch(mainAction.setState({ field: 'processedData', value: null }))
@@ -54,13 +71,22 @@ const OutputTable = () => {
             })}
           </tbody>
         </table>
-        <div className='flex-end gap-2 mt-4'>
-          <button className='btn btn-warning' onClick={handleCancel}>
-            Cancel
-          </button>
-          <button className='btn btn-primary' onClick={handleExport}>
-            Export
-          </button>
+        <div className='flex-space-between gap-2 mt-4'>
+          <Pagination
+            pageOffset={pageOffset}
+            dataLength={processedData.output.length}
+            itemPerPage={ITEM_PER_PAGE}
+            handleNext={handleNext}
+            handlePrev={handlePrev}
+          />
+          <div className='flex gap-2'>
+            <button className='btn btn-warning' onClick={handleCancel}>
+              Cancel
+            </button>
+            <button className='btn btn-primary' onClick={handleExport}>
+              Export
+            </button>
+          </div>
         </div>
       </div>
     </div>
